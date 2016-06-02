@@ -13,6 +13,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture tiles;
 	TextureRegion[][] grid;
+	TextureRegion[][] tinyGrid;
 	TextureRegion down;
 	TextureRegion up;
 	TextureRegion right;
@@ -21,6 +22,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextureRegion upReversed;
 	TextureRegion downReversed;
 	TextureRegion standReversed;
+	TextureRegion tree;
+	Zombie zombie;
+	int windowHeight;
+	int windowWidth;
+	int treeX, treeY;
+	boolean treeIsLocated = false;
 	float x, y, xv, yv;
 	float time;
 	Animation walkUp;
@@ -29,22 +36,27 @@ public class MyGdxGame extends ApplicationAdapter {
 	Animation walkRight;
 
 
+
 	static final int WIDTH = 16;
 	static final int HEIGHT = 16;
-	static final float MAX_VELOCITY = 100;
-	static final float DECLERATION_RATE = 0.95f;
-	static final float SPEED_MULTIPLIER = 1.5f;
-	static final float SCALE_MULTIPLIER = 3;
+	static final float MAX_VELOCITY = 100f;
+	static final float DECLERATION_RATE = 0.5f;
+	static final float SPEED_MULTIPLIER = 2.0f;
+	static final float SCALE_MULTIPLIER = 3f;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		tiles = new Texture("tiles.png");
+		tinyGrid = TextureRegion.split(tiles, WIDTH/2, HEIGHT/2);
 		grid = TextureRegion.split(tiles, WIDTH, HEIGHT);
 		down = grid[6][0];
 		up = grid[6][1];
 		stand = grid[6][2];
 		right = grid[6][3];
+		tree = tinyGrid[1][0];
+		tree.setRegionWidth(WIDTH);
+		tree.setRegionHeight(HEIGHT);
 		left = new TextureRegion(right);
 		left.flip(true, false);
 		upReversed = new TextureRegion(up);
@@ -57,18 +69,21 @@ public class MyGdxGame extends ApplicationAdapter {
 		walkDown = new Animation(.15f, down, downReversed);
 		walkLeft = new Animation(.15f, left, standReversed);
 		walkRight = new Animation(.15f, right, stand);
+		zombie = new Zombie();
+		zombie.create();
 
 	}
 
 	@Override
 	public void render () {
 		moveCharacter();
-		moveZombie();
-		moveJelly();
+		zombie.moveCharacter();
+		//moveJelly();
+		plantTree();
 
 
 		time += Gdx.graphics.getDeltaTime();
-
+		TextureRegion zImg = zombie.animationTile(time);
 		TextureRegion img;
 		if (xv<0)
 		{
@@ -95,6 +110,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, x, y, WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
+		batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
+		batch.draw(tree,treeX, treeY, WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.end();
 	}
 
@@ -140,8 +157,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		yv = decelerate(yv);
 		xv = decelerate(xv);
 
-		int windowHeight = Gdx.graphics.getHeight();
-		int windowWidth  =  Gdx.graphics.getWidth();
+		windowHeight = Gdx.graphics.getHeight();
+		windowWidth = Gdx.graphics.getWidth();
 
 		if (x<(-WIDTH*SCALE_MULTIPLIER))
 		{
@@ -166,20 +183,20 @@ public class MyGdxGame extends ApplicationAdapter {
 	public float decelerate(float velocity)
 	{
 		velocity *= DECLERATION_RATE;
-		if (Math.abs(velocity) < 1)
+		if (Math.abs(velocity) < 5)
 		{
 			velocity = 0;
 		}
 		return velocity;
 	}
 
-	public void moveZombie()
+	public void plantTree()
 	{
-
-	}
-
-	public void moveJelly()
-	{
-
+		if (!treeIsLocated)
+		{
+			treeX = (int)(Math.random()*10000%windowWidth);
+			treeY = (int)(Math.random()*10000%windowHeight);
+			treeIsLocated = true;
+		}
 	}
 }
