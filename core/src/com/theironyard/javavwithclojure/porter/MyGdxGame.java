@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -17,13 +18,23 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextureRegion right;
 	TextureRegion left;
 	TextureRegion stand;
+	TextureRegion upReversed;
+	TextureRegion downReversed;
+	TextureRegion standReversed;
 	float x, y, xv, yv;
+	float time;
+	Animation walkUp;
+	Animation walkDown;
+	Animation walkLeft;
+	Animation walkRight;
+
 
 	static final int WIDTH = 16;
 	static final int HEIGHT = 16;
 	static final float MAX_VELOCITY = 100;
 	static final float DECLERATION_RATE = 0.95f;
 	static final float SPEED_MULTIPLIER = 1.5f;
+	static final float SCALE_MULTIPLIER = 3;
 
 	@Override
 	public void create () {
@@ -36,44 +47,58 @@ public class MyGdxGame extends ApplicationAdapter {
 		right = grid[6][3];
 		left = new TextureRegion(right);
 		left.flip(true, false);
+		upReversed = new TextureRegion(up);
+		upReversed.flip(true, false);
+		downReversed = new TextureRegion(down);
+		downReversed.flip(true, false);
+		standReversed = new TextureRegion(stand);
+		standReversed.flip(true, false);
+		walkUp = new Animation(0.15f, up, upReversed);
+		walkDown = new Animation(.15f, down, downReversed);
+		walkLeft = new Animation(.15f, left, standReversed);
+		walkRight = new Animation(.15f, right, stand);
+
 	}
 
 	@Override
 	public void render () {
-		move();
+		moveCharacter();
+		moveZombie();
+		moveJelly();
 
-		//time += Gdx.graphics.getDeltaTime();
+
+		time += Gdx.graphics.getDeltaTime();
 
 		TextureRegion img;
 		if (xv<0)
 		{
-			img = left;
+			img = walkLeft.getKeyFrame(time, true);
 		}
 		else if (xv>0)
 		{
-			img = right;
+			img = walkRight.getKeyFrame(time, true);
 		}
 		else if (yv<0)
 		{
-			img = down;
+			img = walkDown.getKeyFrame(time, true);
 		}
 		else if (yv>0)
 		{
-			img = up;
+			img = walkUp.getKeyFrame(time, true);
 		}
 		else
 		{
 			img = stand;
 		}
 
-		Gdx.gl.glClearColor(0.1f, 0.1f, 0.8f, 0.7f);
+		Gdx.gl.glClearColor(0.5f, 0.65f, 0.5f, 0.5f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, x, y, WIDTH*2, HEIGHT*2);
+		batch.draw(img, x, y, WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.end();
 	}
 
-	public void move()
+	public void moveCharacter()
 	{
 		if (Gdx.input.isKeyPressed(Input.Keys.UP))
 		{
@@ -109,15 +134,32 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 		}
 
-
-
-
-
 		float delta = Gdx.graphics.getDeltaTime();
 		y+= yv * delta;
 		x+= xv * delta;
 		yv = decelerate(yv);
 		xv = decelerate(xv);
+
+		int windowHeight = Gdx.graphics.getHeight();
+		int windowWidth  =  Gdx.graphics.getWidth();
+
+		if (x<(-WIDTH*SCALE_MULTIPLIER))
+		{
+			x = windowWidth;
+		}
+		if (x>(windowWidth))
+		{
+			x = -(WIDTH*SCALE_MULTIPLIER);
+		}
+
+		if (y<(-HEIGHT*SCALE_MULTIPLIER))
+		{
+			y = windowHeight;
+		}
+		if (y>(windowHeight))
+		{
+			y = -(HEIGHT*SCALE_MULTIPLIER);
+		}
 
 	}
 
@@ -129,5 +171,15 @@ public class MyGdxGame extends ApplicationAdapter {
 			velocity = 0;
 		}
 		return velocity;
+	}
+
+	public void moveZombie()
+	{
+
+	}
+
+	public void moveJelly()
+	{
+
 	}
 }
