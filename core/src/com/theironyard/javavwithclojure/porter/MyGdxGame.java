@@ -23,7 +23,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	static final int HEIGHT = 16;
 	static final float MAX_VELOCITY = 100;
 	static final float DECLERATION_RATE = 0.95f;
-
+	static final float SPEED_MULTIPLIER = 1.5f;
 
 	@Override
 	public void create () {
@@ -69,7 +69,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.8f, 0.7f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, x, y, WIDTH*3, HEIGHT*3);
+		batch.draw(img, x, y, WIDTH*2, HEIGHT*2);
 		batch.end();
 	}
 
@@ -78,26 +78,38 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyPressed(Input.Keys.UP))
 		{
 			yv = MAX_VELOCITY;
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+			{
+				yv = MAX_VELOCITY*SPEED_MULTIPLIER;
+			}
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
 		{
 			yv = -MAX_VELOCITY;
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+			{
+				yv = -MAX_VELOCITY*SPEED_MULTIPLIER;
+			}
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
 		{
 			xv = MAX_VELOCITY;
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+			{
+				xv = MAX_VELOCITY*SPEED_MULTIPLIER;
+			}
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
 		{
 			xv = -MAX_VELOCITY;
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+			{
+				xv = -MAX_VELOCITY*SPEED_MULTIPLIER;
+			}
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
-		{
-			xv *= MAX_VELOCITY*2;
-			yv *= MAX_VELOCITY*2;
-		}
+
 
 
 
