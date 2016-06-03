@@ -25,14 +25,14 @@ public class PlayerCharacter
     TextureRegion tree;
     int windowHeight;
     int windowWidth;
-    int treeX, treeY;
-    boolean firstRun = true;
     float x, y, xv, yv;
-    float time;
     Animation walkUp;
     Animation walkDown;
     Animation walkLeft;
     Animation walkRight;
+
+    int score;
+    int health;
 
 
     public void create () {
@@ -59,6 +59,8 @@ public class PlayerCharacter
         walkDown = new Animation(.15f, down, downReversed);
         walkLeft = new Animation(.15f, left, standReversed);
         walkRight = new Animation(.15f, right, stand);
+        score = 0;
+        health = 25;
     }
 
     public TextureRegion animationTile(float time)
@@ -87,7 +89,7 @@ public class PlayerCharacter
         return img;
     }
 
-    public void moveCharacter()
+    public void moveCharacter(Apple apple)
     {
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
         {
@@ -166,12 +168,18 @@ public class PlayerCharacter
             y = -(MyGdxGame.HEIGHT*MyGdxGame.SCALE_MULTIPLIER);
         }
 
+        if (Math.abs(apple.getX()-x)<MyGdxGame.PROXIMITY_TOUCHING && Math.abs(apple.getY()-y)<MyGdxGame.PROXIMITY_TOUCHING)
+        {
+            apple.locateNewApple();
+            score++;
+        }
+
     }
 
     public float decelerate(float velocity)
     {
         velocity *= MyGdxGame.DECLERATION_RATE;
-        if (Math.abs(velocity) < 5)
+        if (Math.abs(velocity) < MyGdxGame.STOP_THRESHHOLD)
         {
             velocity = 0;
         }
@@ -186,6 +194,11 @@ public class PlayerCharacter
     public float getY()
     {
         return y;
+    }
+
+    public int getScore()
+    {
+        return score;
     }
 
 }

@@ -163,7 +163,7 @@ public class Zombie
     public float decelerate(float velocity)
     {
         velocity *= MyGdxGame.DECLERATION_RATE;
-        if (Math.abs(velocity) < 1)
+        if (Math.abs(velocity) < MyGdxGame.STOP_THRESHHOLD)
         {
             velocity = 0;
         }
