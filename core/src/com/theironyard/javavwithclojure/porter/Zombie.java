@@ -1,10 +1,8 @@
 package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -24,20 +22,21 @@ public class Zombie
     private TextureRegion standReversed;
     private int windowHeight;
     private int windowWidth;
-    private int pathDirection;
+    private int pathDirectionX;
+    private int pathDirectionY;
     private float pathDuration;
     private boolean hasTarget = false;
     private boolean hasPath = false;
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
+    public static final float DETECT_DISTANCE = 150f;
 
-    float x, y, xv, yv;
-    float time;
-    Animation walkUp;
-    Animation walkDown;
-    Animation walkLeft;
-    Animation walkRight;
+    private float x, y, xv, yv;
+    private Animation walkUp;
+    private Animation walkDown;
+    private Animation walkLeft;
+    private Animation walkRight;
 
     public void create ()
     {
@@ -89,13 +88,11 @@ public class Zombie
         return zImg;
     }
 
-    public void moveCharacter()
+    public void moveCharacter(PlayerCharacter player)
     {
-        choosePath();
+        choosePath(player);
 
-
-
-        if (pathDirection == 0)
+        if (pathDirectionY == 0)
         {
             yv = MyGdxGame.MAX_VELOCITY;
             if (hasTarget)
@@ -103,29 +100,29 @@ public class Zombie
                 yv = MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
-        else if (pathDirection == 1)
+        else if (pathDirectionY == 1)
         {
             yv = -MyGdxGame.MAX_VELOCITY;
             if (hasTarget)
             {
-                yv = -MyGdxGame.MAX_VELOCITY*MyGdxGame.SPEED_MULTIPLIER;
+                yv = -MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
 
-        if (pathDirection == 2)
+        if (pathDirectionX == 0)
         {
             xv = MyGdxGame.MAX_VELOCITY;
             if (hasTarget)
             {
-                xv = MyGdxGame.MAX_VELOCITY*MyGdxGame.SPEED_MULTIPLIER;
+                xv = MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
-        else if (pathDirection == 3)
+        else if (pathDirectionX == 1)
         {
             xv = -MyGdxGame.MAX_VELOCITY;
             if (hasTarget)
             {
-                xv = -MyGdxGame.MAX_VELOCITY*MyGdxGame.SPEED_MULTIPLIER;
+                xv = -MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
 
@@ -173,11 +170,34 @@ public class Zombie
         return velocity;
     }
 
-    public void choosePath()
+    public void choosePath(PlayerCharacter player)
     {
-        if (!hasPath)
+        canISeeAGoodGuy(player);
+
+        if (hasTarget)
         {
-            pathDirection = (int)(Math.random()*1000%5);
+            if (x>player.getX())
+            {
+                pathDirectionX = 1;
+            }
+            else if(x<player.getX())
+            {
+                pathDirectionX = 0;
+            }
+
+            if (y>player.getY())
+            {
+                pathDirectionY = 1;
+            }
+            else if(y<player.getY())
+            {
+                pathDirectionY = 0;
+            }
+        }
+        else if (!hasPath)
+        {
+            pathDirectionX = (int)(Math.random()*1000%3);
+            pathDirectionY = (int)(Math.random()*1000%3);
             pathDuration = (float) (Math.random() * 1000 % MAX_PATH_DURATION);
             hasPath = true;
         }
@@ -190,11 +210,24 @@ public class Zombie
     public float getY() {
         return y;
     }
-    public void startLocation(boolean run) {
+    public void startLocation(boolean run)
+    {
         if (run)
         {
             x = (int) (Math.random() * 10000 % windowWidth);
             y = (int) (Math.random() * 10000 % windowHeight);
+        }
+    }
+
+    public void canISeeAGoodGuy(PlayerCharacter player)
+    {
+        if (Math.abs(player.getX() - x)<DETECT_DISTANCE && (Math.abs(player.getY() - y)<DETECT_DISTANCE))
+        {
+            hasTarget = true;
+        }
+        else
+        {
+            hasTarget = false;
         }
     }
 }

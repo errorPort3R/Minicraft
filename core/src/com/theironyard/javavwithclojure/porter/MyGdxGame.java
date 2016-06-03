@@ -14,6 +14,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	Texture tiles;
 	TextureRegion[][] tinyGrid;
 	TextureRegion tree;
+	Jelly jelly;
 	Zombie zombie;
 	PlayerCharacter player;
 	int windowHeight;
@@ -26,7 +27,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	static final int HEIGHT = 16;
 	static final float MAX_VELOCITY = 100f;
 	static final float DECLERATION_RATE = 0.5f;
-	static final float SPEED_MULTIPLIER = 2.0f;
+	static final float SPEED_MULTIPLIER = 2f;
 	static final float SCALE_MULTIPLIER = 3f;
 
 	@Override
@@ -37,6 +38,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		tree = tinyGrid[1][0];
 		tree.setRegionWidth(WIDTH);
 		tree.setRegionHeight(HEIGHT);
+		jelly = new Jelly();
+		jelly.create();
 		zombie = new Zombie();
 		zombie.create();
 		player = new PlayerCharacter();
@@ -47,12 +50,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		player.moveCharacter();
-		zombie.moveCharacter();
+		jelly.moveCharacter(player);
+		jelly.startLocation(firstRun);
+		zombie.moveCharacter(player);
 		zombie.startLocation(firstRun);
 		plantTree();
 
 
 		time += Gdx.graphics.getDeltaTime();
+		TextureRegion jImg = jelly.animationTile(time);
 		TextureRegion zImg = zombie.animationTile(time);
 		TextureRegion img = player.animationTile(time);
 
@@ -61,6 +67,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(img, player.getX(), player.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
+		batch.draw(jImg, jelly.getX(), jelly.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.draw(tree, treeX, treeY, WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.end();
 	}
