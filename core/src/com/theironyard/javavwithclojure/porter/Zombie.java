@@ -12,22 +12,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Zombie
 {
-    Texture tiles;
-    TextureRegion[][] grid;
-    TextureRegion down;
-    TextureRegion up;
-    TextureRegion right;
-    TextureRegion left;
-    TextureRegion stand;
-    TextureRegion upReversed;
-    TextureRegion downReversed;
-    TextureRegion standReversed;
-    int windowHeight;
-    int windowWidth;
-    int pathDirection;
-    float pathDuration;
-    boolean hasTarget = true;
-    boolean hasPath = false;
+    private Texture tiles;
+    private TextureRegion[][] grid;
+    private TextureRegion down;
+    private TextureRegion up;
+    private TextureRegion right;
+    private TextureRegion left;
+    private TextureRegion stand;
+    private TextureRegion upReversed;
+    private TextureRegion downReversed;
+    private TextureRegion standReversed;
+    private int windowHeight;
+    private int windowWidth;
+    private int pathDirection;
+    private float pathDuration;
+    private boolean hasTarget = false;
+    private boolean hasPath = false;
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
@@ -177,7 +177,7 @@ public class Zombie
     {
         if (!hasPath)
         {
-            pathDirection = (int)(Math.random()*1000%4);
+            pathDirection = (int)(Math.random()*1000%5);
             pathDuration = (float) (Math.random() * 1000 % MAX_PATH_DURATION);
             hasPath = true;
         }
@@ -190,9 +190,11 @@ public class Zombie
     public float getY() {
         return y;
     }
-    public void startLocation()
-    {
-        x = (int)(Math.random()*10000%windowWidth);
-        y = (int)(Math.random()*10000%windowHeight);
+    public void startLocation(boolean run) {
+        if (run)
+        {
+            x = (int) (Math.random() * 10000 % windowWidth);
+            y = (int) (Math.random() * 10000 % windowHeight);
+        }
     }
 }
