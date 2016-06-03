@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * Created by jeffryporter on 6/2/16.
  */
-public class Jelly
+public class Jelly extends Monster
 {
     private Texture tiles;
     private TextureRegion[][] grid;
@@ -21,6 +21,7 @@ public class Jelly
     private float pathDuration;
     private boolean hasTarget = false;
     private boolean hasPath = false;
+
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
@@ -35,6 +36,7 @@ public class Jelly
         grid = TextureRegion.split(tiles, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         down = grid[7][4];
         up = grid[7][5];
+
 
 
         moveTile = new Animation(0.15f, up, down);

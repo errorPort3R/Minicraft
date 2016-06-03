@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import sun.jvm.hotspot.utilities.BitMap;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -18,11 +17,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	PlayerCharacter player;
 	Tree tree;
 	Apple apple;
-	BitmapFont font;
+	BitmapFont scoreFont;
+	BitmapFont healthFont;
+
 
 	boolean firstRun = true;
 	float time;
 	String scoreOutput;
+	String healthOutput;
 
 
 	static final int WIDTH = 16;
@@ -48,15 +50,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		zombie.create();
 		player = new PlayerCharacter();
 		player.create();
-		font = new BitmapFont();
-		font.setColor(Color.BLACK);
-
-
+		scoreFont = new BitmapFont();
+		scoreFont.setColor(Color.BLACK);
+		healthFont = new BitmapFont();
 	}
 
 	@Override
 	public void render () {
 		player.moveCharacter(apple);
+		player.checkForDamage(zombie,time);
+		player.checkForDamage(jelly,time);
 		jelly.moveCharacter(player);
 		jelly.startLocation(firstRun);
 		zombie.moveCharacter(player);
@@ -67,6 +70,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 		firstRun = false;
 		scoreOutput = String.format("SCORE: %d", player.getScore());
+		if (player.getHealth()<=(player.getHealth()/5))
+		{
+			healthFont.setColor(Color.RED);
+		}
+		else
+		{
+			healthFont.setColor(Color.BLACK);
+		}
+		healthOutput = String.format("HEALTH: %d", player.getHealth());
 
 		time += Gdx.graphics.getDeltaTime();
 		TextureRegion jImg = jelly.animationTile(time);
@@ -78,7 +90,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.5f, 0.65f, 0.5f, 0.5f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch,scoreOutput,10, (Gdx.graphics.getHeight()-3));
+		scoreFont.draw(batch,scoreOutput,10, (Gdx.graphics.getHeight()-3));
+		healthFont.draw(batch, healthOutput, 10, (Gdx.graphics.getHeight()-15));
 		batch.draw(img, player.getX(), player.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
 		batch.draw(jImg, jelly.getX(), jelly.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);

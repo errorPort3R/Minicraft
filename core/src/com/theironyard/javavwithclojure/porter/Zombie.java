@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * Created by jeffryporter on 6/2/16.
  */
-public class Zombie
+public class Zombie extends Monster
 {
     private Texture tiles;
     private TextureRegion[][] grid;

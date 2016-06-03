@@ -6,33 +6,38 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 /**
  * Created by jeffryporter on 6/2/16.
  */
 public class PlayerCharacter
 {
-    Texture tiles;
-    TextureRegion[][] grid;
-    TextureRegion[][] tinyGrid;
-    TextureRegion down;
-    TextureRegion up;
-    TextureRegion right;
-    TextureRegion left;
-    TextureRegion stand;
-    TextureRegion upReversed;
-    TextureRegion downReversed;
-    TextureRegion standReversed;
-    TextureRegion tree;
-    int windowHeight;
-    int windowWidth;
-    float x, y, xv, yv;
-    Animation walkUp;
-    Animation walkDown;
-    Animation walkLeft;
-    Animation walkRight;
+    private Texture tiles;
+    private TextureRegion[][] grid;
+    private TextureRegion[][] tinyGrid;
+    private TextureRegion down;
+    private TextureRegion up;
+    private TextureRegion right;
+    private TextureRegion left;
+    private TextureRegion stand;
+    private TextureRegion upReversed;
+    private TextureRegion downReversed;
+    private TextureRegion standReversed;
+    private TextureRegion tree;
+    private int windowHeight;
+    private int windowWidth;
+    private float x, y, xv, yv;
+    private Animation walkUp;
+    private Animation walkDown;
+    private Animation walkLeft;
+    private Animation walkRight;
 
-    int score;
-    int health;
+    private int score;
+    private int health;
+    private int timer;
+
+    private static int CYCLES = 1000;
 
 
     public void create () {
@@ -61,6 +66,7 @@ public class PlayerCharacter
         walkRight = new Animation(.15f, right, stand);
         score = 0;
         health = 25;
+        timer = 0;
     }
 
     public TextureRegion animationTile(float time)
@@ -172,6 +178,22 @@ public class PlayerCharacter
         {
             apple.locateNewApple();
             score++;
+            health++;
+        }
+    }
+
+    public void checkForDamage(Monster monster, float time)
+    {
+
+
+        if ((Math.abs(monster.getX()-x)<MyGdxGame.PROXIMITY_TOUCHING) &&
+                (Math.abs(monster.getY()-y)<MyGdxGame.PROXIMITY_TOUCHING))
+        {
+            if (time-monster.getAttackTimer()>=1)
+            {
+                monster.setAttackTimer(time);
+                health--;
+            }
         }
 
     }
@@ -199,6 +221,11 @@ public class PlayerCharacter
     public int getScore()
     {
         return score;
+    }
+
+    public int getHealth()
+    {
+        return health;
     }
 
 }
