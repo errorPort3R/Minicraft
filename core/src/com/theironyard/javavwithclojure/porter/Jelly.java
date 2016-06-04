@@ -1,6 +1,7 @@
 package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +22,7 @@ public class Jelly extends Monster
     private float pathDuration;
     private boolean hasTarget = false;
     private boolean hasPath = false;
+    private Sound attackSound;
 
 
     public static final float SPEED_MULTIPLIER = 1.5f;
@@ -36,6 +38,7 @@ public class Jelly extends Monster
         grid = TextureRegion.split(tiles, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         down = grid[7][4];
         up = grid[7][5];
+
 
 
 
@@ -171,6 +174,7 @@ public class Jelly extends Monster
     public float getY() {
         return y;
     }
+
     public void startLocation(boolean run) {
         if (run)
         {
@@ -178,6 +182,7 @@ public class Jelly extends Monster
             y = (int) (Math.random() * 10000 % windowHeight);
         }
     }
+
     public void canISeeAGoodGuy(PlayerCharacter player)
     {
         if (Math.abs(player.getX() - x)<DETECT_DISTANCE && (Math.abs(player.getY() - y)<DETECT_DISTANCE))
@@ -188,5 +193,11 @@ public class Jelly extends Monster
         {
             hasTarget = false;
         }
+    }
+
+    @Override
+    public Sound getAttackSound()
+    {
+        return attackSound = Gdx.audio.newSound(Gdx.files.internal("pickup.wav"));
     }
 }

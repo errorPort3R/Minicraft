@@ -2,6 +2,7 @@ package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -32,10 +33,10 @@ public class PlayerCharacter
     private Animation walkDown;
     private Animation walkLeft;
     private Animation walkRight;
+    private Sound ouchSound;
 
     private int score;
     private int health;
-    private int timer;
 
     private static int CYCLES = 1000;
 
@@ -66,7 +67,8 @@ public class PlayerCharacter
         walkRight = new Animation(.15f, right, stand);
         score = 0;
         health = 25;
-        timer = 0;
+
+
     }
 
     public TextureRegion animationTile(float time)
@@ -193,6 +195,8 @@ public class PlayerCharacter
             {
                 monster.setAttackTimer(time);
                 health--;
+                monster.getAttackSound().play(1.0f);
+
             }
         }
 

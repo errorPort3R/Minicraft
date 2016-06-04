@@ -1,6 +1,7 @@
 package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,6 +28,8 @@ public class Zombie extends Monster
     private float pathDuration;
     private boolean hasTarget = false;
     private boolean hasPath = false;
+    private Sound attackSound;
+
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
@@ -58,8 +61,6 @@ public class Zombie extends Monster
         walkDown = new Animation(.15f, down, downReversed);
         walkLeft = new Animation(.15f, left, standReversed);
         walkRight = new Animation(.15f, right, stand);
-
-
     }
 
     public TextureRegion animationTile(float time)
@@ -229,5 +230,11 @@ public class Zombie extends Monster
         {
             hasTarget = false;
         }
+    }
+
+    @Override
+    public Sound getAttackSound()
+    {
+        return attackSound = Gdx.audio.newSound(Gdx.files.internal("craft.wav"));
     }
 }
