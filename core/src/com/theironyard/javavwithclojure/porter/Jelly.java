@@ -198,6 +198,6 @@ public class Jelly extends Monster
     @Override
     public Sound getAttackSound()
     {
-        return attackSound = Gdx.audio.newSound(Gdx.files.internal("pickup.wav"));
+        return attackSound = Gdx.audio.newSound(Gdx.files.internal("jellyattack.mp3"));
     }
 }

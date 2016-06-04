@@ -1,6 +1,7 @@
 package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,6 +16,7 @@ public class Apple
     private int x, y;
     private int windowHeight;
     private int windowWidth;
+    private static Sound eatApple = Gdx.audio.newSound(Gdx.files.internal("eatapple.mp3"));
 
 
     public void create ()
@@ -45,5 +47,10 @@ public class Apple
     public int getY()
     {
         return y;
+    }
+
+    public static Sound getEatAppleSound()
+    {
+        return eatApple;
     }
 }

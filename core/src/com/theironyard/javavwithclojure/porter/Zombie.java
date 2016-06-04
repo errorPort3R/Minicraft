@@ -235,6 +235,6 @@ public class Zombie extends Monster
     @Override
     public Sound getAttackSound()
     {
-        return attackSound = Gdx.audio.newSound(Gdx.files.internal("craft.wav"));
+        return attackSound = Gdx.audio.newSound(Gdx.files.internal("zombieattack.mp3"));
     }
 }

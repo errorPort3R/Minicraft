@@ -181,6 +181,7 @@ public class PlayerCharacter
             apple.locateNewApple();
             score++;
             health++;
+            Apple.getEatAppleSound().play(1.0f);
         }
     }
 

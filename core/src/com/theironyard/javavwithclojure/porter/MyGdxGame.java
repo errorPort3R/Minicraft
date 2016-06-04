@@ -21,6 +21,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	BitmapFont healthFont;
 
 
+
 	boolean firstRun = true;
 	float time;
 	String scoreOutput;
@@ -53,6 +54,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		scoreFont = new BitmapFont();
 		scoreFont.setColor(Color.BLACK);
 		healthFont = new BitmapFont();
+
+
 	}
 
 	@Override
@@ -99,6 +102,5 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
 		batch.end();
 	}
-
 
 }
