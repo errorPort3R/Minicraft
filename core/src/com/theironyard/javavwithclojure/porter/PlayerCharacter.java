@@ -22,10 +22,10 @@ public class PlayerCharacter
     private TextureRegion right;
     private TextureRegion left;
     private TextureRegion stand;
+    private TextureRegion gotHit;
     private TextureRegion upReversed;
     private TextureRegion downReversed;
     private TextureRegion standReversed;
-    private TextureRegion tree;
     private int windowHeight;
     private int windowWidth;
     private float x, y, xv, yv;
@@ -33,10 +33,11 @@ public class PlayerCharacter
     private Animation walkDown;
     private Animation walkLeft;
     private Animation walkRight;
-    private Sound ouchSound;
 
     private int score;
     private int health;
+    private boolean damage;
+    private boolean isAlive;
 
     private static int CYCLES = 1000;
 
@@ -50,9 +51,9 @@ public class PlayerCharacter
         up = grid[6][1];
         stand = grid[6][2];
         right = grid[6][3];
-        tree = tinyGrid[1][0];
-        tree.setRegionWidth(MyGdxGame.WIDTH);
-        tree.setRegionHeight(MyGdxGame.HEIGHT);
+        gotHit = tinyGrid[1][5];
+        gotHit.setRegionHeight(MyGdxGame.HEIGHT);
+        gotHit.setRegionWidth(MyGdxGame.WIDTH);
         left = new TextureRegion(right);
         left.flip(true, false);
         upReversed = new TextureRegion(up);
@@ -67,8 +68,8 @@ public class PlayerCharacter
         walkRight = new Animation(.15f, right, stand);
         score = 0;
         health = 25;
-
-
+        damage = false;
+        isAlive = true;
     }
 
     public TextureRegion animationTile(float time)
@@ -187,7 +188,7 @@ public class PlayerCharacter
 
     public void checkForDamage(Monster monster, float time)
     {
-
+        damage = false;
 
         if ((Math.abs(monster.getX()-x)<MyGdxGame.PROXIMITY_TOUCHING) &&
                 (Math.abs(monster.getY()-y)<MyGdxGame.PROXIMITY_TOUCHING))
@@ -197,10 +198,13 @@ public class PlayerCharacter
                 monster.setAttackTimer(time);
                 health--;
                 monster.getAttackSound().play(1.0f);
-
+                damage = true;
             }
         }
-
+        if (health<=0)
+        {
+            isAlive = false;
+        }
     }
 
     public float decelerate(float velocity)
@@ -231,6 +235,20 @@ public class PlayerCharacter
     public int getHealth()
     {
         return health;
+    }
+
+    public TextureRegion getHitTile()
+    {
+        return gotHit;
+    }
+    public boolean getDamageStatus()
+    {
+        return damage;
+    }
+
+    public boolean isAlive()
+    {
+        return isAlive;
     }
 
 }

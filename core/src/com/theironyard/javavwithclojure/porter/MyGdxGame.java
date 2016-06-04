@@ -25,6 +25,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	Apple apple;
 	BitmapFont scoreFont;
 	BitmapFont healthFont;
+	BitmapFont theEndFont;
+
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TiledMapRenderer tiledMapRenderer;
@@ -35,6 +37,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	float time;
 	String scoreOutput;
 	String healthOutput;
+	String theEndOutput;
 
 
 	static final int WIDTH = 16;
@@ -52,6 +55,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		tiles = new Texture("tiles.png");
 		apple = new Apple();
 		apple.create();
+		apple.locateNewApple();
 		tree = new Tree();
 		tree.create();
 		jelly = new Jelly();
@@ -63,45 +67,49 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		scoreFont = new BitmapFont();
 		scoreFont.setColor(Color.BLACK);
 		healthFont = new BitmapFont();
+		theEndFont = new BitmapFont();
+		theEndFont.setColor(Color.RED);
+		theEndOutput = "You have died!\n   THE END!";
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
-
-		//vvvvvv borrowed code from
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,w,h);
 		camera.update();
 		tiledMap = new TmxMapLoader().load("level1.tmx");
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,2f);
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,SCALE_MULTIPLIER);
 		Gdx.input.setInputProcessor(this);
-		//^^^^^^^ borrowed code
+
 	}
 
 	@Override
 	public void render () {
-		player.moveCharacter(apple);
-		player.checkForDamage(zombie,time);
-		player.checkForDamage(jelly,time);
-		jelly.moveCharacter(player);
-		jelly.startLocation(firstRun);
-		zombie.moveCharacter(player);
-		zombie.startLocation(firstRun);
-		if (firstRun)
-		{
-			tree.plantTree();
+
+		if (player.isAlive()) {
+			player.moveCharacter(apple);
+			player.checkForDamage(zombie, time);
+			player.checkForDamage(jelly, time);
+			jelly.moveCharacter(player);
+			jelly.startLocation(firstRun);
+			zombie.moveCharacter(player);
+			zombie.startLocation(firstRun);
+			if (firstRun) {
+				tree.plantTree();
+			}
+			firstRun = false;
+			scoreOutput = String.format("SCORE: %d", player.getScore());
+			if (player.getHealth() <= (player.getHealth() / 5)) {
+				healthFont.setColor(Color.RED);
+			} else {
+				healthFont.setColor(Color.BLACK);
+			}
+			healthOutput = String.format("HEALTH: %d", player.getHealth());
+
+//start drawing
+			Gdx.gl.glClearColor(0.5f, 0.65f, 0.5f, 0.5f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		}
-		firstRun = false;
-		scoreOutput = String.format("SCORE: %d", player.getScore());
-		if (player.getHealth()<=(player.getHealth()/5))
-		{
-			healthFont.setColor(Color.RED);
-		}
-		else
-		{
-			healthFont.setColor(Color.BLACK);
-		}
-		healthOutput = String.format("HEALTH: %d", player.getHealth());
 
 		time += Gdx.graphics.getDeltaTime();
 		TextureRegion jImg = jelly.animationTile(time);
@@ -109,29 +117,34 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		TextureRegion img = player.animationTile(time);
 		TextureRegion tImg = tree.getTreeTexture(time);
 		TextureRegion aImg = apple.getAppleTexture();
-
-//start drawing
-		Gdx.gl.glClearColor(0.5f, 0.65f, 0.5f, 0.5f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		//vvvvvvvvvborrowed code
 		camera.update();
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
-		//^^^^^^^ borrowed code
-
 		batch.begin();
-		scoreFont.draw(batch,scoreOutput,10, (Gdx.graphics.getHeight()-3));
-		healthFont.draw(batch, healthOutput, 10, (Gdx.graphics.getHeight()-15));
-		batch.draw(img, player.getX(), player.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
-		batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
-		batch.draw(jImg, jelly.getX(), jelly.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
-		batch.draw(tImg, tree.getX(), tree.getY(), WIDTH*SCALE_MULTIPLIER, HEIGHT*SCALE_MULTIPLIER);
-		batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
+		scoreFont.draw(batch, scoreOutput, 10, (Gdx.graphics.getHeight() - 3));
+		healthFont.draw(batch, healthOutput, 10, (Gdx.graphics.getHeight() - 15));
+		if (player.isAlive())
+		{
+			if (player.getDamageStatus())
+			{
+				batch.draw(player.getHitTile(), player.getX(), player.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			}
+			batch.draw(img, player.getX(), player.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			batch.draw(img, player.getX(), player.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			batch.draw(jImg, jelly.getX(), jelly.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			batch.draw(tImg, tree.getX(), tree.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
+		}
+		else
+		{
+			//batch.begin();
+			theEndFont.draw(batch, theEndOutput, ((Gdx.graphics.getWidth()/2)-10), (Gdx.graphics.getHeight()/2)-10);
+			//batch.end();
+
+		}
 		batch.end();
 	}
-
-
 
 	@Override
 	public boolean keyDown(int keycode) {
