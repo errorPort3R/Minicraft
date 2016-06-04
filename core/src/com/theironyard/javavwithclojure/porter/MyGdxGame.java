@@ -15,11 +15,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+import java.util.ArrayList;
+
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
 	Texture tiles;
-	Jelly jelly;
-	Zombie zombie;
+	ArrayList<Monster> monsters;
+//	Jelly jelly;
+//	Zombie zombie;
 	PlayerCharacter player;
 	Tree tree;
 	Apple apple;
@@ -48,6 +51,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	static final float SCALE_MULTIPLIER = 3f;
 	static final float STOP_THRESHHOLD = 5f;
 	static final float PROXIMITY_TOUCHING = 32f;
+	static final int NUM_OF_MONSTERS = 4;
 
 	@Override
 	public void create () {
@@ -58,10 +62,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		apple.locateNewApple();
 		tree = new Tree();
 		tree.create();
-		jelly = new Jelly();
-		jelly.create();
-		zombie = new Zombie();
-		zombie.create();
+		monsters = new ArrayList();
+		generateMonsters();
 		player = new PlayerCharacter();
 		player.create();
 		scoreFont = new BitmapFont();
@@ -88,12 +90,13 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 		if (player.isAlive()) {
 			player.moveCharacter(apple);
-			player.checkForDamage(zombie, time);
-			player.checkForDamage(jelly, time);
-			jelly.moveCharacter(player);
-			jelly.startLocation(firstRun);
-			zombie.moveCharacter(player);
-			zombie.startLocation(firstRun);
+			player.checkForDamage(monsters, time);
+			for(Monster monster : monsters)
+			{
+				monster.moveCharacter(player);
+				monster.startLocation(firstRun);
+			}
+//
 			if (firstRun) {
 				tree.plantTree();
 			}
@@ -112,8 +115,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		}
 
 		time += Gdx.graphics.getDeltaTime();
-		TextureRegion jImg = jelly.animationTile(time);
-		TextureRegion zImg = zombie.animationTile(time);
 		TextureRegion img = player.animationTile(time);
 		TextureRegion tImg = tree.getTreeTexture(time);
 		TextureRegion aImg = apple.getAppleTexture();
@@ -131,17 +132,16 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			}
 			batch.draw(img, player.getX(), player.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
 			batch.draw(img, player.getX(), player.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
-			batch.draw(zImg, zombie.getX(), zombie.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
-			batch.draw(jImg, jelly.getX(), jelly.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			for(Monster monster : monsters)
+			{
+				batch.draw(monster.animationTile(time), monster.getX(), monster.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			}
 			batch.draw(tImg, tree.getX(), tree.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
 			batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
 		}
 		else
 		{
-			//batch.begin();
 			theEndFont.draw(batch, theEndOutput, ((Gdx.graphics.getWidth()/2)-10), (Gdx.graphics.getHeight()/2)-10);
-			//batch.end();
-
 		}
 		batch.end();
 	}
@@ -184,6 +184,26 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void generateMonsters()
+	{
+		for (int i = 0; i< NUM_OF_MONSTERS ; i++)
+		{
+			Monster monster = null;
+			int selector = (int)((Math.random()*50)%2);
+			switch (selector)
+			{
+				case 0:
+					monster = new Jelly();
+					break;
+				case 1:
+					monster = new Zombie();
+					break;
+			}
+			monster.create();
+			monsters.add(monster);
+		}
 	}
 
 

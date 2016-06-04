@@ -1,6 +1,7 @@
 package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by jeffryporter on 6/3/16.
@@ -11,7 +12,7 @@ public class Monster
     float y;
     float attackTimer;
     Sound attackSound;
-
+    TextureRegion tile;
 
     public float getY() {
         return y;
@@ -19,6 +20,11 @@ public class Monster
 
     public float getX() {
         return x;
+    }
+
+    public void create()
+    {
+
     }
 
 
@@ -33,6 +39,19 @@ public class Monster
 
     public float getAttackTimer() {
         return attackTimer;
+    }
+
+    public void moveCharacter(PlayerCharacter player) {
+
+    }
+
+    public void startLocation(boolean run)
+    {
+
+    }
+    public TextureRegion animationTile(float time)
+    {
+        return tile = new TextureRegion();
     }
 
 }

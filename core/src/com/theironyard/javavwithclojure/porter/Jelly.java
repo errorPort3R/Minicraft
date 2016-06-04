@@ -27,7 +27,7 @@ public class Jelly extends Monster
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
-    public static final float DETECT_DISTANCE = 150f;
+    public static final float DETECT_DISTANCE = 100f;
 
     private float x, y, xv, yv;
     private Animation moveTile;
@@ -175,7 +175,8 @@ public class Jelly extends Monster
         return y;
     }
 
-    public void startLocation(boolean run) {
+    public void startLocation(boolean run)
+    {
         if (run)
         {
             x = (int) (Math.random() * 10000 % windowWidth);

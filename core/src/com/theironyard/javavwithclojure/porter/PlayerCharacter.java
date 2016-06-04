@@ -186,24 +186,24 @@ public class PlayerCharacter
         }
     }
 
-    public void checkForDamage(Monster monster, float time)
+    public void checkForDamage(ArrayList<Monster> monsters, float time)
     {
         damage = false;
 
-        if ((Math.abs(monster.getX()-x)<MyGdxGame.PROXIMITY_TOUCHING) &&
-                (Math.abs(monster.getY()-y)<MyGdxGame.PROXIMITY_TOUCHING))
+        for ( Monster monster : monsters)
         {
-            if (time-monster.getAttackTimer()>=1)
-            {
-                monster.setAttackTimer(time);
-                health--;
-                monster.getAttackSound().play(1.0f);
-                damage = true;
+            if ((Math.abs(monster.getX() - x) < MyGdxGame.PROXIMITY_TOUCHING) &&
+                    (Math.abs(monster.getY() - y) < MyGdxGame.PROXIMITY_TOUCHING)) {
+                if (time - monster.getAttackTimer() >= 1) {
+                    monster.setAttackTimer(time);
+                    health--;
+                    monster.getAttackSound().play(1.0f);
+                    damage = true;
+                }
             }
-        }
-        if (health<=0)
-        {
-            isAlive = false;
+            if (health <= 0) {
+                isAlive = false;
+            }
         }
     }
 
