@@ -2,14 +2,20 @@ package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
 	Texture tiles;
 	Jelly jelly;
@@ -19,6 +25,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	Apple apple;
 	BitmapFont scoreFont;
 	BitmapFont healthFont;
+	TiledMap tiledMap;
+	OrthographicCamera camera;
+	TiledMapRenderer tiledMapRenderer;
 
 
 
@@ -55,7 +64,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		scoreFont.setColor(Color.BLACK);
 		healthFont = new BitmapFont();
 
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
 
+
+		//vvvvvv borrowed code from
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false,w,h);
+		camera.update();
+		tiledMap = new TmxMapLoader().load("level1.tmx");
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,2f);
+		Gdx.input.setInputProcessor(this);
+		//^^^^^^^ borrowed code
 	}
 
 	@Override
@@ -90,8 +110,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		TextureRegion tImg = tree.getTreeTexture(time);
 		TextureRegion aImg = apple.getAppleTexture();
 
+//start drawing
 		Gdx.gl.glClearColor(0.5f, 0.65f, 0.5f, 0.5f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		//vvvvvvvvvborrowed code
+		camera.update();
+		tiledMapRenderer.setView(camera);
+		tiledMapRenderer.render();
+		//^^^^^^^ borrowed code
+
 		batch.begin();
 		scoreFont.draw(batch,scoreOutput,10, (Gdx.graphics.getHeight()-3));
 		healthFont.draw(batch, healthOutput, 10, (Gdx.graphics.getHeight()-15));
@@ -102,5 +130,48 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
 		batch.end();
 	}
+
+
+
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+
 
 }

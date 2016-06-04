@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * Created by jeffryporter on 6/3/16.
  */
-public class Tree extends Terrain
+public class Tree
 {
     Texture tiles;
     TextureRegion[][] grid;
     TextureRegion tilePiece;
     int windowHeight;
     int windowWidth;
+    int x,y;
 
 
     public void create ()
