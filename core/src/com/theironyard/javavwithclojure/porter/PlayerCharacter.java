@@ -2,7 +2,6 @@ package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -193,15 +192,18 @@ public class PlayerCharacter
         for ( Monster monster : monsters)
         {
             if ((Math.abs(monster.getX() - x) < MyGdxGame.PROXIMITY_TOUCHING) &&
-                    (Math.abs(monster.getY() - y) < MyGdxGame.PROXIMITY_TOUCHING)) {
-                if (time - monster.getAttackTimer() >= 1) {
+                    (Math.abs(monster.getY() - y) < MyGdxGame.PROXIMITY_TOUCHING))
+            {
+                if (time - monster.getAttackTimer() >= 1)
+                {
                     monster.setAttackTimer(time);
                     health--;
                     monster.getAttackSound().play(1.0f);
                     damage = true;
                 }
             }
-            if (health <= 0) {
+            if (health <= 0)
+            {
                 isAlive = false;
             }
         }

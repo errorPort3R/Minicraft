@@ -22,6 +22,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
 	Texture tiles;
 	ArrayList<Monster> monsters;
+	ArrayList<Tree> trees;
 	PlayerCharacter player;
 	Tree tree;
 	Apple apple;
@@ -51,7 +52,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	static final float STOP_THRESHHOLD = 5f;
 	static final float AGGRO_RANGE = 100f;
 	static final float PROXIMITY_TOUCHING = 32f;
-	static final int NUM_OF_MONSTERS = 20;
+	static final int NUM_OF_MONSTERS = 10;
+	static final int MAX_NUM_TREES = 40;
 
 	@Override
 	public void create () {
@@ -60,8 +62,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		apple = new Apple();
 		apple.create();
 		apple.locateNewApple();
-		tree = new Tree();
-		tree.create();
+		trees = new ArrayList();
+//		tree = new Tree();
+//		tree.create();
 		monsters = new ArrayList();
 		generateMonsters();
 		player = new PlayerCharacter();
@@ -79,7 +82,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		camera.update();
-		tiledMap = new TmxMapLoader().load("level1.tmx");
+		tiledMap = new TmxMapLoader().load("level2.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,SCALE_MULTIPLIER);
 		Gdx.input.setInputProcessor(this);
 
@@ -102,7 +105,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 			if (firstRun)
 			{
-				tree.plantTree();
+				generateTrees();
 			}
 			firstRun = false;
 			scoreOutput = String.format("SCORE: %d", player.getScore());
@@ -120,7 +123,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 		time += Gdx.graphics.getDeltaTime();
 		TextureRegion img = player.animationTile(time);
-		TextureRegion tImg = tree.getTreeTexture(time);
 		TextureRegion aImg = apple.getAppleTexture();
 		camera.update();
 		tiledMapRenderer.setView(camera);
@@ -140,7 +142,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			{
 				batch.draw(monster.animationTile(time), monster.getX(), monster.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
 			}
-			batch.draw(tImg, tree.getX(), tree.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			for(Tree tree : trees)
+			{
+				batch.draw(Tree.tilePiece, tree.getX(), tree.getY(), WIDTH * SCALE_MULTIPLIER, HEIGHT * SCALE_MULTIPLIER);
+			}
 			batch.draw(aImg, apple.getX(), apple.getY(), WIDTH, HEIGHT);
 		}
 		else
@@ -225,4 +230,19 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			monsters.add(monster);
 		}
 	}
+
+	public void generateTrees()
+	{
+		Tree tree;
+		for (int i = 0; i<MAX_NUM_TREES;i++)
+		{
+			tree = new Tree();
+			tree.create();
+			tree.plantTree();
+			trees.add(tree);
+		}
+
+	}
+
 }
+

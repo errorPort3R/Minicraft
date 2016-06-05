@@ -11,7 +11,7 @@ public class Tree
 {
     Texture tiles;
     TextureRegion[][] grid;
-    TextureRegion tilePiece;
+    public static TextureRegion tilePiece;
     int windowHeight;
     int windowWidth;
     int x,y;
@@ -46,5 +46,15 @@ public class Tree
     public int getY()
     {
         return y;
+    }
+
+    public void setX(int value)
+    {
+        x = value;
+    }
+
+    public void setY(int value)
+    {
+        y = value;
     }
 }
