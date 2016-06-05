@@ -32,7 +32,7 @@ public class Octopus extends Monster {
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
-    public static final float DETECT_DISTANCE = 150f;
+    public static final float SLOW_MULTIPLIER = .75f;
 
     private float x, y, xv, yv;
     private Animation walkUp;
@@ -77,32 +77,44 @@ public class Octopus extends Monster {
         return zImg;
     }
 
-    public void moveCharacter(PlayerCharacter player) {
+    public void moveCharacter(PlayerCharacter player)
+    {
         choosePath(player);
 
-        if (pathDirectionY == 0) {
-            yv = MyGdxGame.MAX_VELOCITY;
-            if (hasTarget) {
-                yv = MyGdxGame.MAX_VELOCITY * SPEED_MULTIPLIER;
+        if (pathDirectionY == 0)
+        {
+            yv = MyGdxGame.MAX_VELOCITY*SLOW_MULTIPLIER;
+            if (hasTarget && !(Math.abs(y-player.getY())<MyGdxGame.STOP_THRESHHOLD))
+            {
+                yv = MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
-        } else if (pathDirectionY == 1) {
-            yv = -MyGdxGame.MAX_VELOCITY;
-            if (hasTarget) {
-                yv = -MyGdxGame.MAX_VELOCITY * SPEED_MULTIPLIER;
+        }
+        else if (pathDirectionY == 1)
+        {
+            yv = -MyGdxGame.MAX_VELOCITY*SLOW_MULTIPLIER;
+            if (hasTarget && !(Math.abs(y-player.getY())<MyGdxGame.STOP_THRESHHOLD))
+            {
+                yv = -MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
 
-        if (pathDirectionX == 0) {
-            xv = MyGdxGame.MAX_VELOCITY;
-            if (hasTarget) {
-                xv = MyGdxGame.MAX_VELOCITY * SPEED_MULTIPLIER;
-            }
-        } else if (pathDirectionX == 1) {
-            xv = -MyGdxGame.MAX_VELOCITY;
-            if (hasTarget) {
-                xv = -MyGdxGame.MAX_VELOCITY * SPEED_MULTIPLIER;
+        if (pathDirectionX == 0)
+        {
+            xv = MyGdxGame.MAX_VELOCITY*SLOW_MULTIPLIER;
+            if (hasTarget && !(Math.abs(x-player.getX())<MyGdxGame.STOP_THRESHHOLD))
+            {
+                xv = MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
             }
         }
+        else if (pathDirectionX == 1)
+        {
+            xv = -MyGdxGame.MAX_VELOCITY*SLOW_MULTIPLIER;
+            if (hasTarget && !(Math.abs(x-player.getX())<MyGdxGame.STOP_THRESHHOLD))
+            {
+                xv = -MyGdxGame.MAX_VELOCITY*SPEED_MULTIPLIER;
+            }
+        }
+
 
         float delta = Gdx.graphics.getDeltaTime();
         y += yv * delta;
@@ -189,14 +201,7 @@ public class Octopus extends Monster {
         {
             hasTarget = false;
         }
-        if (((Math.abs((x-player.getX())))<2) && !((Math.abs((y-player.getY()))) < 2))
-        {
-            x = player.getX();
-        }
-        if (!((Math.abs((x-player.getX())))<2) && ((Math.abs((y-player.getY()))) < 2))
-        {
-            y = player.getY();
-        }
+
     }
 
     @Override

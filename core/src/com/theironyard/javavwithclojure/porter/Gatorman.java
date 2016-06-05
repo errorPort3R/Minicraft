@@ -7,16 +7,20 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * Created by jeffryporter on 6/2/16.
+ * Created by jeffryporter on 6/5/16.
  */
-public class Jelly extends Monster
+public class Gatorman extends Monster
 {
     private Texture tiles;
     private TextureRegion[][] grid;
     private TextureRegion down;
     private TextureRegion up;
-    private TextureRegion left;
     private TextureRegion right;
+    private TextureRegion left;
+    private TextureRegion stand;
+    private TextureRegion upReversed;
+    private TextureRegion downReversed;
+    private TextureRegion standReversed;
     private int windowHeight;
     private int windowWidth;
     private int pathDirectionX;
@@ -26,32 +30,37 @@ public class Jelly extends Monster
     private boolean hasPath = false;
     private Sound attackSound;
 
-    public static final float SLOW_MULTIPLIER = .75f;
+
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
-
+    public static final float SLOW_MULTIPLIER = .75f;
 
     private float x, y, xv, yv;
     private Animation walkUp;
     private Animation walkDown;
     private Animation walkLeft;
     private Animation walkRight;
-    private Animation stand;
 
     public void create ()
     {
         tiles = new Texture("tiles.png");
         grid = TextureRegion.split(tiles, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
-        down = grid[7][4];
-        up = grid[7][5];
-        left = grid[7][6];
-        right = new TextureRegion(left);
-        right.flip(true, false);
-        walkUp = new Animation(0.15f, up, down);
-        walkDown = new Animation(.15f, up, down);
-        walkLeft = new Animation(.15f, left, down);
-        walkRight = new Animation(.15f, right, down);
-
+        down = grid[4][4];
+        up = grid[4][5];
+        stand = grid[4][6];
+        right = grid[4][7];
+        left = new TextureRegion(right);
+        left.flip(true, false);
+        upReversed = new TextureRegion(up);
+        upReversed.flip(true, false);
+        downReversed = new TextureRegion(down);
+        downReversed.flip(true, false);
+        standReversed = new TextureRegion(stand);
+        standReversed.flip(true, false);
+        walkUp = new Animation(0.15f, up, upReversed);
+        walkDown = new Animation(.15f, down, downReversed);
+        walkLeft = new Animation(.15f, left, standReversed);
+        walkRight = new Animation(.15f, right, stand);
     }
 
     public TextureRegion animationTile(float time)
@@ -75,7 +84,7 @@ public class Jelly extends Monster
         }
         else
         {
-            zImg = walkUp.getKeyFrame(time, true);;
+            zImg = stand;
         }
         return zImg;
     }
@@ -118,7 +127,6 @@ public class Jelly extends Monster
             }
         }
 
-
         float delta = Gdx.graphics.getDeltaTime();
         y+= yv * delta;
         x+= xv * delta;
@@ -133,8 +141,6 @@ public class Jelly extends Monster
         windowHeight = Gdx.graphics.getHeight();
         windowWidth = Gdx.graphics.getWidth();
 
-
-        //wrap around code
         if (x<(-MyGdxGame.WIDTH*MyGdxGame.SCALE_MULTIPLIER))
         {
             x = windowWidth;
@@ -188,6 +194,7 @@ public class Jelly extends Monster
             {
                 pathDirectionY = 0;
             }
+
         }
         else if (!hasPath)
         {
@@ -205,7 +212,6 @@ public class Jelly extends Monster
     public float getY() {
         return y;
     }
-
     public void startLocation(boolean run)
     {
         if (run)
@@ -225,11 +231,13 @@ public class Jelly extends Monster
         {
             hasTarget = false;
         }
+
     }
 
     @Override
     public Sound getAttackSound()
     {
-        return attackSound = Gdx.audio.newSound(Gdx.files.internal("jellyattack.mp3"));
+        return attackSound = Gdx.audio.newSound(Gdx.files.internal("zombieattack.mp3"));
     }
 }
+

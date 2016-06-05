@@ -51,7 +51,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	static final float STOP_THRESHHOLD = 5f;
 	static final float AGGRO_RANGE = 100f;
 	static final float PROXIMITY_TOUCHING = 32f;
-	static final int NUM_OF_MONSTERS = 4;
+	static final int NUM_OF_MONSTERS = 20;
 
 	@Override
 	public void create () {
@@ -71,7 +71,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		healthFont = new BitmapFont();
 		theEndFont = new BitmapFont();
 		theEndFont.setColor(Color.RED);
-		theEndOutput = "You have died!\n   THE END!\n PLAY AGAIN?\n      Y/N";
+		theEndOutput = "You have died!\n   THE END!\n PLAY AGAIN?\n        Y/N";
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -205,7 +205,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		for (int i = 0; i< NUM_OF_MONSTERS ; i++)
 		{
 			Monster monster = null;
-			int selector = (int)((Math.random()*50)%3);
+			int selector = (int)((Math.random()*50)%4);
 			switch (selector)
 			{
 				case 0:
@@ -216,6 +216,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 					break;
 				case 2:
 					monster = new Octopus();
+					break;
+				case 3:
+					monster = new Gatorman();
 					break;
 			}
 			monster.create();
