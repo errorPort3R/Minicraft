@@ -2,6 +2,7 @@ package com.theironyard.javavwithclojure.porter;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,8 +22,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
 	Texture tiles;
 	ArrayList<Monster> monsters;
-//	Jelly jelly;
-//	Zombie zombie;
 	PlayerCharacter player;
 	Tree tree;
 	Apple apple;
@@ -71,7 +70,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		healthFont = new BitmapFont();
 		theEndFont = new BitmapFont();
 		theEndFont.setColor(Color.RED);
-		theEndOutput = "You have died!\n   THE END!";
+		theEndOutput = "You have died!\n   THE END!\n PLAY AGAIN?\n      Y/N";
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -87,7 +86,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void render () {
-
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+		{
+			Gdx.app.exit();
+		}
 		if (player.isAlive()) {
 			player.moveCharacter(apple);
 			player.checkForDamage(monsters, time);
@@ -96,8 +98,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				monster.moveCharacter(player);
 				monster.startLocation(firstRun);
 			}
-//
-			if (firstRun) {
+
+			if (firstRun)
+			{
 				tree.plantTree();
 			}
 			firstRun = false;
@@ -142,8 +145,18 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		else
 		{
 			theEndFont.draw(batch, theEndOutput, ((Gdx.graphics.getWidth()/2)-10), (Gdx.graphics.getHeight()/2)-10);
+
 		}
 		batch.end();
+		if (Gdx.input.isKeyPressed(Input.Keys.Y))
+		{
+			firstRun = true;
+			create();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.N))
+		{
+			Gdx.app.exit();
+		}
 	}
 
 	@Override
@@ -191,7 +204,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		for (int i = 0; i< NUM_OF_MONSTERS ; i++)
 		{
 			Monster monster = null;
-			int selector = (int)((Math.random()*50)%2);
+			int selector = (int)((Math.random()*50)%3);
 			switch (selector)
 			{
 				case 0:
@@ -200,11 +213,12 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				case 1:
 					monster = new Zombie();
 					break;
+				case 2:
+					monster = new Octopus();
+					break;
 			}
 			monster.create();
 			monsters.add(monster);
 		}
 	}
-
-
 }

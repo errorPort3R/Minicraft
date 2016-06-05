@@ -15,6 +15,8 @@ public class Jelly extends Monster
     private TextureRegion[][] grid;
     private TextureRegion down;
     private TextureRegion up;
+    private TextureRegion left;
+    private TextureRegion right;
     private int windowHeight;
     private int windowWidth;
     private int pathDirectionX;
@@ -30,7 +32,11 @@ public class Jelly extends Monster
     public static final float DETECT_DISTANCE = 100f;
 
     private float x, y, xv, yv;
-    private Animation moveTile;
+    private Animation walkUp;
+    private Animation walkDown;
+    private Animation walkLeft;
+    private Animation walkRight;
+    private Animation stand;
 
     public void create ()
     {
@@ -38,18 +44,40 @@ public class Jelly extends Monster
         grid = TextureRegion.split(tiles, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         down = grid[7][4];
         up = grid[7][5];
-
-
-
-
-        moveTile = new Animation(0.15f, up, down);
+        left = grid[7][6];
+        right = new TextureRegion(left);
+        right.flip(true, false);
+        walkUp = new Animation(0.15f, up, down);
+        walkDown = new Animation(.15f, up, down);
+        walkLeft = new Animation(.15f, left, down);
+        walkRight = new Animation(.15f, right, down);
 
     }
 
     public TextureRegion animationTile(float time)
     {
-        TextureRegion jImg;
-        return jImg = moveTile.getKeyFrame(time, true);
+        TextureRegion zImg;
+        if (xv<0)
+        {
+            zImg = walkLeft.getKeyFrame(time, true);
+        }
+        else if (xv>0)
+        {
+            zImg = walkRight.getKeyFrame(time, true);
+        }
+        else if (yv<0)
+        {
+            zImg = walkDown.getKeyFrame(time, true);
+        }
+        else if (yv>0)
+        {
+            zImg = walkUp.getKeyFrame(time, true);
+        }
+        else
+        {
+            zImg = walkUp.getKeyFrame(time, true);;
+        }
+        return zImg;
     }
 
     public void moveCharacter(PlayerCharacter player)
@@ -104,6 +132,8 @@ public class Jelly extends Monster
         windowHeight = Gdx.graphics.getHeight();
         windowWidth = Gdx.graphics.getWidth();
 
+
+        //wrap around code
         if (x<(-MyGdxGame.WIDTH*MyGdxGame.SCALE_MULTIPLIER))
         {
             x = windowWidth;
