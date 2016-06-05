@@ -49,6 +49,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	static final float SPEED_MULTIPLIER = 2f;
 	static final float SCALE_MULTIPLIER = 3f;
 	static final float STOP_THRESHHOLD = 5f;
+	static final float AGGRO_RANGE = 100f;
 	static final float PROXIMITY_TOUCHING = 32f;
 	static final int NUM_OF_MONSTERS = 4;
 
@@ -76,7 +77,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false,w,h);
+		camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		camera.update();
 		tiledMap = new TmxMapLoader().load("level1.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,SCALE_MULTIPLIER);

@@ -29,7 +29,7 @@ public class Jelly extends Monster
 
     public static final float SPEED_MULTIPLIER = 1.5f;
     public static final float MAX_PATH_DURATION = 2.0f;
-    public static final float DETECT_DISTANCE = 100f;
+
 
     private float x, y, xv, yv;
     private Animation walkUp;
@@ -216,13 +216,21 @@ public class Jelly extends Monster
 
     public void canISeeAGoodGuy(PlayerCharacter player)
     {
-        if (Math.abs(player.getX() - x)<DETECT_DISTANCE && (Math.abs(player.getY() - y)<DETECT_DISTANCE))
+        if (Math.abs(player.getX() - x)<MyGdxGame.AGGRO_RANGE && (Math.abs(player.getY() - y)<MyGdxGame.AGGRO_RANGE))
         {
             hasTarget = true;
         }
         else
         {
             hasTarget = false;
+        }
+        if (((Math.abs((x-player.getX())))<2) && !((Math.abs((y-player.getY()))) < 2))
+        {
+            x = player.getX();
+        }
+        if (!((Math.abs((x-player.getX())))<2) && ((Math.abs((y-player.getY()))) < 2))
+        {
+            y = player.getY();
         }
     }
 

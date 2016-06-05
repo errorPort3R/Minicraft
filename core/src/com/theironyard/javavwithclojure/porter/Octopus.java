@@ -179,11 +179,23 @@ public class Octopus extends Monster {
         }
     }
 
-    public void canISeeAGoodGuy(PlayerCharacter player) {
-        if (Math.abs(player.getX() - x) < DETECT_DISTANCE && (Math.abs(player.getY() - y) < DETECT_DISTANCE)) {
+    public void canISeeAGoodGuy(PlayerCharacter player)
+    {
+        if (Math.abs(player.getX() - x)<MyGdxGame.AGGRO_RANGE && (Math.abs(player.getY() - y)<MyGdxGame.AGGRO_RANGE))
+        {
             hasTarget = true;
-        } else {
+        }
+        else
+        {
             hasTarget = false;
+        }
+        if (((Math.abs((x-player.getX())))<2) && !((Math.abs((y-player.getY()))) < 2))
+        {
+            x = player.getX();
+        }
+        if (!((Math.abs((x-player.getX())))<2) && ((Math.abs((y-player.getY()))) < 2))
+        {
+            y = player.getY();
         }
     }
 
