@@ -24,7 +24,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	ArrayList<Monster> monsters;
 	ArrayList<Tree> trees;
 	PlayerCharacter player;
-	Tree tree;
 	Apple apple;
 	BitmapFont scoreFont;
 	BitmapFont healthFont;
@@ -63,8 +62,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		apple.create();
 		apple.locateNewApple();
 		trees = new ArrayList();
-//		tree = new Tree();
-//		tree.create();
 		monsters = new ArrayList();
 		generateMonsters();
 		player = new PlayerCharacter();
