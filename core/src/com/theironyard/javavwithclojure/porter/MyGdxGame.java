@@ -51,7 +51,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	static final float STOP_THRESHHOLD = 5f;
 	static final float AGGRO_RANGE = 100f;
 	static final float PROXIMITY_TOUCHING = 32f;
-	static final int NUM_OF_MONSTERS = 10;
+	static final int NUM_OF_MONSTERS = 5;
 	static final int MAX_NUM_TREES = 40;
 
 	@Override
@@ -151,12 +151,12 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 		}
 		batch.end();
-		if (Gdx.input.isKeyPressed(Input.Keys.Y))
+		if (Gdx.input.isKeyPressed(Input.Keys.Y)&&!(player.isAlive()))
 		{
 			firstRun = true;
 			create();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.N))
+		if (Gdx.input.isKeyPressed(Input.Keys.N)&&!(player.isAlive()))
 		{
 			Gdx.app.exit();
 		}

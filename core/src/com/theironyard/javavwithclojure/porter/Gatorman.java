@@ -63,6 +63,7 @@ public class Gatorman extends Monster
         walkRight = new Animation(.15f, right, stand);
     }
 
+
     public TextureRegion animationTile(float time)
     {
         TextureRegion zImg;

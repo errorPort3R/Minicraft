@@ -41,7 +41,7 @@ public class Zombie extends Monster
     private Animation walkLeft;
     private Animation walkRight;
 
-    public void create ()
+    public void create()
     {
         tiles = new Texture("tiles.png");
         grid = TextureRegion.split(tiles, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
